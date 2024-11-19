@@ -1,11 +1,12 @@
-# Use official PHP 7.3 with Apache image as the base image
+# Use the official PHP 7.3 with Apache image as the base image
 FROM php:7.3-apache
 
-# Set environment variable for logs bucket (you can modify this bucket name)
-# This is used for configuring your app with Google Cloud Storage if needed.
+# Set environment variables for logging and Google Cloud Storage configuration
 ENV LOGS_BUCKET=${LOGS_BUCKET}
+ENV LOGGING_BEHAVIOR=${LOGGING_BEHAVIOR:-CLOUD_LOGGING_ONLY}  # Defaults to CLOUD_LOGGING_ONLY if not set
+ENV GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/service-account-key.json  # Google Cloud service account key file
 
-# Install required PHP extensions for your app, including support for Google Cloud Storage
+# Install necessary PHP extensions and dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -16,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
 
-# Install Google Cloud SDK and dependencies (for interacting with Google Cloud Storage)
+# Install the Google Cloud SDK (for interacting with Google Cloud Storage)
 RUN curl -sSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
     && echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
     && apt-get update && apt-get install -y google-cloud-sdk
