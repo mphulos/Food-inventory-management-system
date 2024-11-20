@@ -1,0 +1,2 @@
+composer init
+composer require vlucas/phpdotenv
