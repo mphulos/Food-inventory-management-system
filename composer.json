@@ -1,0 +1,27 @@
+{
+    "name": "composer/composer",
+    "type": "library",
+    "description": "Composer helps you declare, manage and install dependencies of PHP projects. It ensures you have the right stack everywhere.",
+    "keywords": [
+        "package",
+        "dependency",
+        "autoload"
+    ],
+    "homepage": "https://getcomposer.org/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nils Adermann",
+            "email": "naderman@naderman.de",
+            "homepage": "https://www.naderman.de"
+        },
+        {
+            "name": "Jordi Boggiano",
+            "email": "j.boggiano@seld.be",
+            "homepage": "https://seld.be"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.4"
+    }
+}
