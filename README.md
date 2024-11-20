@@ -1,7 +1,10 @@
 # Food-inventory-management-system
 Food inventory management system built in PHP
 
-API endpoints
+Please watch this video on how to setup the local enviroment with XAMP on windows 10 
+https://www.youtube.com/watch?v=7qVP5de7hAY&t=97s
+
+API Endpoints
 Request Headers(For all API requests)
 x-api-key: inventoryTest123xxx (ONLY FOR DEMO PURPOSE)
 
