@@ -130,5 +130,41 @@ class ProductModel
             }        
             return $data;
         }      
-    }    
+    } 
+    
+    function low_stock(){
+        $stored_procedure = "CALL getProductsLowStock()";                
+        $stmt = $this->conn->query($stored_procedure);        
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($data != null){
+            return $data['low_stock'];
+        }else{
+            return 0;
+        }
+    }
+
+    public function stock_level_prices(): array | false
+    {
+        $stored_procedure = "CALL getStocklevelsAndPrice()";                
+        $stmt = $this->conn->prepare($stored_procedure);        
+        $stmt->execute();      
+
+        $categories = [];
+        $stockLevels = [];
+        $prices = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $categories[] = $row['category_name'];
+            $stockLevels[] = $row['total_stock'];
+            $prices[] = $row['avg_price'];
+        }
+        
+        $data = [];
+        $data["categories"] = $categories;
+        $data["stockLevels"] = $stockLevels;
+        $data["prices"] = $prices;
+
+        return $data;
+    }
 }

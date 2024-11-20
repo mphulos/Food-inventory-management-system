@@ -45,22 +45,7 @@ class ProductController
                     "message" => "Product $id updated",
                     "rows" => $rows
                 ]);
-            break;
-
-            case "PATCH":
-                $data = $_POST;                
-                $errors = $this->getValidationErrors($data, false);                
-                if ( ! empty($errors)) {
-                    http_response_code(422);
-                    echo json_encode(["errors" => $errors]);
-                    break;
-                }                
-                $rows = $this->productObject->update($product, $data);                
-                echo json_encode([
-                    "message" => "Product $id updated",
-                    "rows" => $rows
-                ]);
-            break;
+            break;          
             
             case "DELETE":
                 $message = $this->productObject->delete($id);                
@@ -78,39 +63,7 @@ class ProductController
         switch ($method) {
             case "GET":
                 $results = $this->productObject->getAll();
-                $html = '<table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="width:15%;">Picture</th>							
-                                    <th>Product Name</th>
-                                    <th>Quantity</th>
-                                    <th>Category</th>
-                                    <th>Price</th>
-                                    <th>Expiration date</th>
-                                    <th style="width:17%;"></th>
-                                </tr>
-                            </thead>
-                            <tbody>';
-                
-                foreach($results AS $result){
-                   $html .= '<tr>
-                                <td><img src="assets/images/stock/'.$result["picture"].'" width="50px"/></td>
-                                <td><input type="checkbox" id="product'.$result["id"].'" name="select_product" value="'.$result["id"].'">
-                                    '.$result["name"].'</td>
-                                <td>'.$result["quantity"].'</td>
-                                <td>'.$result["category"].'</td>
-                                <td>'.$result["price"].'</td>
-                                <td>'.$result["expiration_date"].'</td>
-                                <td>
-                                    <a class="btn btn-primary" type="button" data-toggle="modal" id="editProductModalBtn" data-target="#editProductModal" onclick="editProduct('.$result["id"].')"> <i class="glyphicon glyphicon-edit"></i> Edit</a>
-                                    <a class="btn btn-danger" type="button" data-toggle="modal" data-target="#removeProductModal" id="removeProductModalBtn" onclick="removeProduct('.$result["id"].')"> <i class="glyphicon glyphicon-trash"></i> Remove</a>    
-                                </td>
-                            </tr>';
-                }
-
-                $html .= '</tbody>
-                        </table>';
-                echo $html;
+                echo json_encode($results);               
             break;
                 
             case "POST":
@@ -123,44 +76,13 @@ class ProductController
                         $data["search"] = "";
                     }
                     $results =  $this->productObject->search($data["search"], $data["search_category_id"]);
-
-                    $html = '<table class="table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:15%;">Picture</th>							
-                                        <th>Product Name</th>
-                                        <th>Quantity</th>
-                                        <th>Category</th>
-                                        <th>Price</th>
-                                        <th>Expiration date</th>
-                                        <th style="width:17%;"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>';
-                    
-                    foreach($results AS $result){
-                    $html .= '<tr>
-                                    <td><img src="assets/images/stock/'.$result["picture"].'" width="50px"/></td>
-                                    <td><input type="checkbox" id="product'.$result["id"].'" name="select_product" value="'.$result["id"].'">
-                                    '.$result["name"].'</td>
-                                    <td>'.$result["quantity"].'</td>
-                                    <td>'.$result["category"].'</td>
-                                    <td>'.$result["price"].'</td>
-                                    <td>'.$result["expiration_date"].'</td>
-                                    <td>
-                                        <a class="btn btn-primary" type="button" data-toggle="modal" id="editProductModalBtn" data-target="#editProductModal" onclick="editProduct('.$result["id"].')"> <i class="glyphicon glyphicon-edit"></i> Edit</a>
-                                        <a class="btn btn-danger" type="button" data-toggle="modal" data-target="#removeProductModal" id="removeProductModalBtn" onclick="removeProduct('.$result["id"].')"> <i class="glyphicon glyphicon-trash"></i> Remove</a>    
-                                    </td>
-                                </tr>';
-                    }
-
-                    $html .= '</tbody>
-                            </table>';                    
-                    echo $html;
-                    if(!sizeof($results)){
-                        echo "<p>No matching product found</p>";
-                    }
-
+                    echo $results; 
+                }elseif(isset($data["low_stock"])){
+                    $results =  $this->productObject->low_stock();
+                    echo $results; 
+                }elseif(isset($data["stock_level_prices"])){
+                    $results =  $this->productObject->stock_level_prices();
+                    echo json_encode($results); 
                 }else{
                     $data["picture"] = "photo_default.png";//$_FILES["picture"]["name"];                 
                     $errors = $this->getValidationErrors($data);                    

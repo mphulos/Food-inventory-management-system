@@ -59,12 +59,7 @@ div.kv-avatar div.file-input div.file-preview {
   width: 250px;
 }
 
-.dash{
-  height: 200px;
-}
-
-.dash span,
-.dash a,
-.dash p {
-  font-size: 25px;
+canvas {
+  width: 100%;
+  height: 400px;
 }

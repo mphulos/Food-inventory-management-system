@@ -20,10 +20,10 @@ if(!in_array($request_key,$secret_api_key)){
     http_response_code(403); // invaild access key
     exit;
 }
-
+;
 $parts = explode("/", $_SERVER["REQUEST_URI"]);
 //Allowed 
-$available_endpoints = array("products", "product_search", "categories");
+$available_endpoints = array("products", "product_search", "categories", "low_stock", "stock_level_prices");
 if (!in_array($parts[3],$available_endpoints)) {
     http_response_code(404);
     exit;
@@ -32,8 +32,8 @@ if (!in_array($parts[3],$available_endpoints)) {
 $id = $parts[4] ?? null;
 $database = new Database("localhost", "inventory", "root", "");
 $controller = new stdClass();  
-    
-if(in_array($parts[3],["products", "product_search"])){
+   
+if(in_array($parts[3],["products", "product_search", "low_stock", "stock_level_prices"])){
     $productObject = new ProductModel($database);
     $controller = new ProductController($productObject);
 }elseif($parts[3] == "categories"){

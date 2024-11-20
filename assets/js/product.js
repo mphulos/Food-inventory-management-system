@@ -78,30 +78,58 @@ function fetchProducts(){
         "headers": {
           "x-api-key": API_KEY
         },
-      };
-      
-      $.ajax(settings).done(function (response) {
-        $("#products_wrap").html(response);
-      })
+    };      
+	$.ajax(settings).done(function (response) {
+		var tableBody = $("#data-table tbody");		
+		tableBody.empty();
+		response = JSON.parse(response);
+		$.each(response, function(index, product) {			
+			var row = $("<tr>");
+			row.append("<td><img src='assets/images/stock/"+product.picture+"' width='34px'/></td>");
+			row.append("<td><input type='checkbox' id='product"+product.id+"' name='select_product' value='"+product.id+"'> "+product.name+" </td>");
+			row.append("<td>" + product.quantity + "</td>");
+			row.append("<td>" + product.category + "</td>");
+			row.append("<td>" + product.price + "</td>");
+			row.append("<td>" + product.expiration_date + "</td>");				
+			var edit_function = "editProduct("+product.id+")";
+			var remove_function = "removeProduct("+product.id+")";
+			row.append("<td><a class='btn btn-primary' type='button' data-toggle='modal' id='editProductModalBtn' data-target='#editProductModal' onclick='"+edit_function+"'> <i class='glyphicon glyphicon-edit'></i> Edit</a> <a class='btn btn-danger' type='button' data-toggle='modal' data-target='#removeProductModal' id='removeProductModalBtn' onclick='"+remove_function+"'> <i class='glyphicon glyphicon-trash'></i> Remove</a></td>");
+			tableBody.append(row);
+		})
+	})
 }
 
 function fetchSeachProducts(){
     var settings = {
-        "url": url+"/product_search/",
-        "method": "POST",
+		"url": url+"/product_search/",
+		"method": "POST",
 		data: {
 			"search": $("#search").val(),
 			"search_category_id": $("#search_category_id").val(),
 			},
 		"timeout": 0,
-        "headers": {
-          "x-api-key": API_KEY
-        },
-      };
-      $.ajax(settings).done(function (response) {
-        console.log(response);
-        $("#products_wrap").html(response);
-      })
+		"headers": {
+		"x-api-key": API_KEY
+	},
+	};
+	$.ajax(settings).done(function (response) {
+	var tableBody = $("#data-table tbody");		
+	tableBody.empty();
+	response = JSON.parse(response);
+	$.each(response, function(index, product) {			
+		var row = $("<tr>");
+		row.append("<td><img src='assets/images/stock/"+product.picture+"' width='34px'/></td>");
+		row.append("<td><input type='checkbox' id='product"+product.id+"' name='select_product' value='"+product.id+"'> "+product.name+" </td>");
+		row.append("<td>" + product.quantity + "</td>");
+		row.append("<td>" + product.category + "</td>");
+		row.append("<td>" + product.price + "</td>");
+		row.append("<td>" + product.expiration_date + "</td>");				
+		var edit_function = "editProduct("+product.id+")";
+		var remove_function = "removeProduct("+product.id+")";
+		row.append("<td><a class='btn btn-primary' type='button' data-toggle='modal' id='editProductModalBtn' data-target='#editProductModal' onclick='"+edit_function+"'> <i class='glyphicon glyphicon-edit'></i> Edit</a> <a class='btn btn-danger' type='button' data-toggle='modal' data-target='#removeProductModal' id='removeProductModalBtn' onclick='"+remove_function+"'> <i class='glyphicon glyphicon-trash'></i> Remove</a></td>");
+		tableBody.append(row);
+	})
+	})
 }
 
 // remove product 
@@ -114,12 +142,12 @@ function removeProduct(productId = null) {
                 type: 'DELETE',
                 headers: {
                     "x-api-key": API_KEY
-                    },
+                },
                 success:function(response) {
                     $("#removeProductBtn").button('reset');
-                        $("#removeProductModal").modal('hide');
-                        fetchProducts();
-                        $(".remove-messages").html('<div class="alert alert-success">'+
+                    $("#removeProductModal").modal('hide');
+                    fetchProducts();
+                    $(".remove-messages").html('<div class="alert alert-success">'+
                     '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
                     '<strong><i class="glyphicon glyphicon-ok-sign"></i></strong> Product deleted successfully.</div>');
 					$(".alert-success").delay(500).show(10, function() {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2024 at 01:07 AM
+-- Generation Time: Nov 20, 2024 at 06:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -68,6 +68,20 @@ SELECT product.*, category.name AS category
     INNER JOIN category ON category.id = product.fk_category_id
     WHERE fk_category_id = categoryId
     AND product.name LIKE CONCAT('%', productName , '%');
+END$$
+
+CREATE PROCEDURE `getProductsLowStock` ()   BEGIN
+SELECT count(*) AS low_stock FROM product WHERE quantity <= 3;
+END$$
+
+CREATE PROCEDURE `getStocklevelsAndPrice` ()   BEGIN
+ SELECT 
+        c.name AS category_name, 
+        IFNULL(SUM(p.quantity), 0) AS total_stock, 
+        IFNULL(AVG(p.price), 0) AS avg_price
+    FROM category c
+    LEFT JOIN product p ON c.id = p.fk_category_id
+    GROUP BY c.id;
 END$$
 
 CREATE PROCEDURE `insertCategory` (`categoryName` VARCHAR(128))   BEGIN
@@ -148,12 +162,12 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `fk_category_id`, `picture`, `price`, `quantity`, `expiration_date`) VALUES
-(24, 'reffr', 1, 'photo_default.png', 5.00, 55, '2023-11-10'),
 (26, 'Product 1', 3, 'photo_default.png', 600.00, 5, '2024-07-11'),
-(29, 'rfrf', 2, 'photo_default.png', 0.00, 5, '2024-11-27'),
-(30, 'Product 11', 1, 'photo_default.png', 200.00, 7, '2024-11-28'),
-(31, 'frfrefre', 2, 'photo_default.png', 200.00, 45, '2024-11-20'),
-(32, 'Test item', 1, 'photo_default.png', 555.00, 6, '2024-11-30');
+(34, 'Product 2', 2, 'photo_default.png', 90.00, 9, '2024-11-20'),
+(36, 'Product test  444', 3, 'photo_default.png', 90.00, 9, '2024-11-20'),
+(37, 'Product 2', 4, 'photo_default.png', 440.03, 5, '2024-11-20'),
+(38, 'Another product ', 4, 'photo_default.png', 80.00, 56, '2024-12-07'),
+(39, 'Testing low stock', 3, 'photo_default.png', 800.00, 2, '2024-11-20');
 
 -- --------------------------------------------------------
 
@@ -212,7 +226,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `users`
